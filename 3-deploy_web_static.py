@@ -6,21 +6,14 @@ from fabric.api import local
 from fabric.api import put
 from fabric.api import run
 
+do_pack = __import__('1-pack_web_static').do_pack
+do_deploy = __import__('2-do_deploy_web_static').do_deploy
+
 env.hosts = ['100.25.19.204', '54.157.159.85']
 
-
-def do_pack():
-    """Create a tar gzipped archive of the directory web_static."""
-    dt = datetime.utcnow()
-    file = "versions/web_static_{}{}{}{}{}{}.tgz".format(dt.year,
-                                                         dt.month,
-                                                         dt.day,
-                                                         dt.hour,
-                                                         dt.minute,
-                                                         dt.second)
-    if os.path.isdir("versions") is False:
-        if local("mkdir -p versions").failed is True:
-            return None
-    if local("tar -cvzf {} web_static".format(file)).failed is True:
-        return None
-    return file
+def deploy():
+    """Creates and distributes an archive to your web servers"""
+    archive_path = do_pack()
+    if archive_path is None:
+        return False
+    return do_deploy(archive_path)
