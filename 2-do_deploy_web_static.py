@@ -5,6 +5,8 @@ using the function do_deploy
 """
 from fabric.api import *
 from os.path import exists
+# do_pack = __import__('1-pack_web_static').do_pack
+
 env.hosts = ['100.26.232.13', '100.26.166.50']
 env.user = "ubuntu"
 env.key_filename = "~/.ssh/id_rsa"
