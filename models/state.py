@@ -20,19 +20,15 @@ class State(BaseModel, Base):
         super().__init__()
         self.name = kwargs.get('name', "")
 
-    @property
-    def cities(self):
-        variable_obj = models.storage.all()
-        list = []
-        result = []
-        for key in variable_obj:
-            city = key.replace('.', ' ')
-            city = shlex.split(city)
-            if (city[0] == 'City'):
-                list.append(variable_obj[key])
-        for value in list:
-            if (value.state_id == self.id):
-                result.append(value)
-        return (result)
+    if models.storage_t != "db":
+        @property
+        def cities(self):
+            """getter for list of city instances related to the state"""
+            city_list = []
+            all_cities = models.storage.all(City)
+            for city in all_cities.values():
+                if city.state_id == self.id:
+                    city_list.append(city)
+            return city_list
 
 
